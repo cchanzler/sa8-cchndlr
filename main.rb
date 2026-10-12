@@ -6,8 +6,8 @@
 # classes. The demo schedules three sessions, books people into one of them,
 # and shows what happens when a booking breaks a rule.
 
-require_relative "session"
-require_relative "schedule"
+require_relative "lib/session"
+require_relative "lib/schedule"
 
 HOUR = 60 * 60
 
