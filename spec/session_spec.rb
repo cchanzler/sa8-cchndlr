@@ -121,4 +121,32 @@ RSpec.describe Session do
       end
     end
   end
+
+  describe "#cancel" do
+    context "when the name is booked" do
+      it "removes the name from the roster" do
+        session.book("Ada", at: early)
+
+        session.cancel("Ada")
+
+        expect(session.roster).to eq([])
+      end
+
+      it "returns one available spot" do
+        session.book("Ada", at: early)
+
+        expect {
+          session.cancel("Ada")
+        }.to change { session.spots_left }.by(1)
+      end
+    end
+
+    context "when the name is not booked" do
+      it "raises an error for an unbooked name" do
+        expect {
+          session.cancel("Ada")
+        }.to raise_error(ArgumentError, "Ada is not booked")
+      end
+    end
+  end
 end
