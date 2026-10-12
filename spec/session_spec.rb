@@ -78,5 +78,47 @@ RSpec.describe Session do
         }.to raise_error(ArgumentError, "Session is full")
       end
     end
+
+    context "when booking exactly one hour before the start" do
+      it "allows the booking" do
+        booking_time = start_time - 60 * 60
+
+        session.book("Ada", at: booking_time)
+
+        expect(session.roster).to eq(["Ada"])
+      end
+    end
+
+    context "when booking less than one hour before the start" do
+      it "rejects the booking" do
+        booking_time = start_time - 30 * 60
+
+        expect {
+          session.book("Ada", at: booking_time)
+        }.to raise_error(ArgumentError, "Booking has closed")
+      end
+
+      it "rejects a booking one second after the cutoff" do
+        booking_time = start_time - 60 * 60 + 1
+
+        expect {
+          session.book("Ada", at: booking_time)
+        }.to raise_error(ArgumentError, "Booking has closed")
+      end
+    end
+
+    context "when booking at or after the start" do
+      it "rejects booking at the start time" do
+        expect {
+          session.book("Ada", at: start_time)
+        }.to raise_error(ArgumentError, "Booking has closed")
+      end
+
+      it "rejects booking after the start time" do
+        expect {
+          session.book("Ada", at: start_time + 60)
+        }.to raise_error(ArgumentError, "Booking has closed")
+      end
+    end
   end
 end
