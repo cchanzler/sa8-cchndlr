@@ -149,4 +149,35 @@ RSpec.describe Session do
       end
     end
   end
+
+  describe "#print_roster" do
+    context "when the session is empty" do
+      it "prints the title and zero bookings" do
+        expect {
+          session.print_roster
+        }.to output("Spin (0/2)\n").to_stdout
+      end
+    end
+
+    context "when the session has bookings" do
+      it "prints the title, booking count, and names" do
+        session.book("Ada", at: early)
+
+        expect {
+          session.print_roster
+        }.to output("Spin (1/2)\n  Ada\n").to_stdout
+      end
+
+      it "prints names alphabetically with two spaces" do
+        session.book("Maya", at: early)
+        session.book("Ada", at: early)
+
+        expected = "Spin (2/2)\n  Ada\n  Maya\n"
+
+        expect {
+          session.print_roster
+        }.to output(expected).to_stdout
+      end
+    end
+  end
 end
